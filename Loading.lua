@@ -4,10 +4,17 @@ Camera:Stop()
 coroutine.wrap(function()
     game:GetService("RunService").Stepped:Connect(function()
         if getupvalues(CombatFramework)[2]['activeController'].timeToNextAttack then
-            getupvalues(CombatFramework)[2]['activeController'].timeToNextAttack = 0
+            getupvalues(CombatFramework)[2].activeController.timeToNextAttack = 0
+            getupvalues(CombatFramework)[2].activeController.attacking = false
+            getupvalues(CombatFramework)[2].activeController.timeToNextBlock = 0
+            getupvalues(CombatFramework)[2].activeController.humanoid.AutoRotate = 80
+            getupvalues(CombatFramework)[2].activeController.increment = 3
+            getupvalues(CombatFramework)[2].activeController.blocking = false
+            getupvalues(CombatFramework)[2].activeController.hitboxMagnitude = 80
         end
     end)
 end)()
+
 
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/GreenDeno/Venyx-UI-Library/main/source.lua"))()
 local venyx = library.new("XzE Hub | Blox Fruits | Select Monster", 5013109572)
@@ -53,7 +60,11 @@ spawn(function()
    game:GetService("RunService").RenderStepped:Connect(function()
     pcall(function()
         if _G.Fa then
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Enemies[Select].HumanoidRootPart.CFrame * CFrame.new(0,20,0)
+    local Distance2 = (game:GetService("Workspace").Enemies[Select].HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    local tween_s = game:service"TweenService"
+    local info = TweenInfo.new(Distance2/250, Enum.EasingStyle.Linear)
+    local tween = tween_s:Create(game:GetService("Players").LocalPlayer.Character["HumanoidRootPart"], info, {CFrame = game:GetService("Workspace").Enemies[Select].HumanoidRootPart.CFrame * CFrame.new(0,20,0)})
+    tween:Play()    
         end
     end)
    end)
@@ -65,8 +76,7 @@ spawn(function()
    game:GetService("RunService").RenderStepped:Connect(function()
     pcall(function()
         if _G.Fa then
-getupvalues(CombatFramework)[2]['activeController'].hitboxMagnitude = 25
-getupvalues(CombatFramework)[2]['activeController']:attack()
+            getupvalues(CombatFramework)[2]['activeController']:attack()
         end
     end)
 end) 
@@ -96,7 +106,7 @@ for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                         if v.Name == Select and v2.Name == Select then
                             v2.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame
                             v2.HumanoidRootPart.CanCollide = false
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * Method
+                            v.Humanoid:ChangeState(11)
                             sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
                         end
                     end
